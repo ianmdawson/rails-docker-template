@@ -1,0 +1,43 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres:11.8
+    ports:
+      - 5432:5432
+    volumes:
+      # Mount the DB dumps folder into the container, to be able to create & access database dumps:
+      - ./db/dumps:/db/dumps
+      # Mount out tmp folder, we might want to have access to something there during development:
+      - ./tmp:/tmp
+      # Mount our 'restoredb' script:
+      - ./bin/restoredb:/bin/restoredb:ro
+      # Mount our 'dumpdb' script:
+      - ./bin/dumpdb:/bin/dumpdb:ro
+      # We'll mount the 'postgres-data' volume into the location Postgres stores it's data:
+      - webapp-postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: rails
+      POSTGRES_PASSWORD: password
+  app:
+    image: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - app_rubygems:/usr/local/bundle
+    depends_on:
+      - db
+    env_file: .env
+    environment:
+      RAILS_ENV: development
+      WAIT_HOSTS: db:5432
+      DATABASE_URL: postgresql://rails:password@db
+
+volumes:
+  app-postgres-data:
+
