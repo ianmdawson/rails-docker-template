@@ -15,7 +15,7 @@ services:
       # Mount our 'dumpdb' script:
       - ./bin/dumpdb:/bin/dumpdb:ro
       # We'll mount the 'postgres-data' volume into the location Postgres stores it's data:
-      - webapp-postgres-data:/var/lib/postgresql/data
+      - app-postgres-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: rails
       POSTGRES_PASSWORD: password
@@ -29,7 +29,7 @@ services:
     working_dir: /app
     volumes:
       - ./:/app
-      - app_rubygems:/usr/local/bundle
+      - app-rubygems:/usr/local/bundle
     depends_on:
       - db
     env_file: .env
@@ -40,4 +40,5 @@ services:
 
 volumes:
   app-postgres-data:
+  app-rubygems:
 
