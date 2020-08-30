@@ -37,6 +37,7 @@ services:
       RAILS_ENV: development
       WAIT_HOSTS: db:5432
       DATABASE_URL: postgresql://rails:password@db
+      BUNDLE_PATH: /usr/local/bundle
 
 volumes:
   app-postgres-data:
