@@ -3,6 +3,6 @@
   "version": "0.0.1",
   "main": "index.js",
   "repository": "git@github.com:ianmdawson/rails-docker-template.git",
-  "author": "Ian M. Dawson <iandawsons@gmail.com>",
+  "author": "Ian M. Dawson",
   "license": "MIT"
 }
