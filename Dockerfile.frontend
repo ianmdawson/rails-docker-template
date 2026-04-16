@@ -6,7 +6,7 @@ RUN apt-get update -qq && apt-get install -y git
 
 WORKDIR /app
 
-COPY package.json package.lock ./
+COPY package.json package-lock.json ./
 RUN npm ci
 
 # TODO: cache dependencies
