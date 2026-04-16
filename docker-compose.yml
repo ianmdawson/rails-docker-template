@@ -1,8 +1,6 @@
-version: "3.7"
-
 services:
   db:
-    image: postgres:11.8
+    image: postgres:18
     ports:
       - 5432:5432
     volumes:
@@ -15,12 +13,29 @@ services:
       # Mount our 'dumpdb' script:
       - ./bin/dumpdb:/bin/dumpdb:ro
       # We'll mount the 'postgres-data' volume into the location Postgres stores it's data:
-      - app-postgres-data:/var/lib/postgresql/data
+      - backend-postgres-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: rails
-      POSTGRES_PASSWORD: password
-  app:
-    image: app
+      POSTGRES_USER: ${POSTGRES_RAILS_USER:-rails}
+      POSTGRES_PASSWORD: ${POSTGRES_RAILS_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_RAILS_DB:-app}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_RAILS_USER:-rails} -d ${POSTGRES_RAILS_DB:-app}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  redis:
+    image: redis:8-alpine
+    command: "redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru"
+    ports:
+      - "6379:6379"
+    volumes:
+      - backend-redis-data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  backend:
     build:
       context: .
       dockerfile: Dockerfile
@@ -29,17 +44,33 @@ services:
     working_dir: /app
     volumes:
       - ./:/app
-      - app-rubygems:/usr/local/bundle
+      - backend-rubygems:/usr/local/bundle
     depends_on:
       - db
     env_file: .env
     environment:
+      POSTGRES_USER: ${POSTGRES_RAILS_USER:-rails}
+      POSTGRES_PASSWORD: ${POSTGRES_RAILS_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_RAILS_DB:-app}
       RAILS_ENV: development
       WAIT_HOSTS: db:5432
-      DATABASE_URL: postgresql://rails:password@db
+#      DATABASE_URL: postgresql://rails:password@db
+      VITE_RUBY_AUTO_BUILD: "false"
+      VITE_RUBY_HOST: frontend
+      VITE_RUBY_PORT: 3036
       BUNDLE_PATH: /usr/local/bundle
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    command: sh -c "npm install && npm run vite dev --host 0.0.0.0 --clearScreen false"
+    volumes:
+      - .:/app
+    ports:
+      - "3036:3036"
 
 volumes:
-  app-postgres-data:
-  app-rubygems:
+  backend-redis-data:
+  backend-postgres-data:
+  backend-rubygems:
 
