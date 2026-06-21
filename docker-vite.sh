@@ -1,4 +1,5 @@
 #!/bin/sh
 
+cd /app/frontend
 npm install
-bin/vite dev
+npm run dev

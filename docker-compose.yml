@@ -53,7 +53,7 @@ services:
       POSTGRES_DB: ${POSTGRES_RAILS_DB:-app}
       RAILS_ENV: development
       WAIT_HOSTS: db:5432
-#      DATABASE_URL: postgresql://rails:password@db
+      DATABASE_URL: postgresql://rails:password@db
       VITE_RUBY_AUTO_BUILD: "false"
       VITE_RUBY_HOST: frontend
       VITE_RUBY_PORT: 3036
@@ -66,6 +66,7 @@ services:
       DEBUG: '*vite*'
       RAILS_ENV: development
       VITE_RUBY_HOST: 0.0.0.0
+      VITE_RUBY_ROOT: /app
     volumes:
       - .:/app
     ports:
