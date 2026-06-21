@@ -35,4 +35,7 @@
 /config/credentials/*.key
 
 node_modules/
+dist
+dist-ssr
+*.local
 

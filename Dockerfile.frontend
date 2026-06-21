@@ -5,15 +5,14 @@ RUN apt-get update -qq && apt-get install -y git
 
 WORKDIR /app
 
-COPY frontend/package.json frontend/package-lock.json ./
-RUN ls -al
+COPY package.json package-lock.json ./
 RUN npm ci
 
 # TODO: cache dependencies
 
-COPY frontend/. .
+COPY . .
 
 # TODO: clean up and only copy the necessary frontend files
 
-EXPOSE 3035
+EXPOSE 3036
 
