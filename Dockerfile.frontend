@@ -1,17 +1,17 @@
 # Dockerfile for Vite Dev Server
 FROM node:24-bullseye-slim
 
-
 RUN apt-get update -qq && apt-get install -y git
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY frontend/package.json frontend/package-lock.json ./
+RUN ls -al
 RUN npm ci
 
 # TODO: cache dependencies
 
-COPY . .
+COPY frontend/. .
 
 # TODO: clean up and only copy the necessary frontend files
 

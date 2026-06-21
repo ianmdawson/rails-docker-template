@@ -1,11 +1,6 @@
 {
-  "name": "rails-docker-template",
-  "version": "0.0.1",
-  "main": "index.js",
-  "repository": "git@github.com:ianmdawson/rails-docker-template.git",
-  "author": "Ian M. Dawson",
-  "license": "MIT",
-  "engines": {
-    "node": ">=22.0.0"
+  "devDependencies": {
+    "vite": "^8.0.16",
+    "vite-plugin-ruby": "^5.2.2"
   }
 }
